@@ -36,11 +36,14 @@ public class PostDao implements DaoInterface<Post>{
                 int id = result.getInt("id");
                 String title = result.getString("title");
                 String teacher = result.getString("author");
-                String description = result.getString("content");
-                Date deadline = result.getDate("modification_date");
+                String content = result.getString("content");
+                Date modification_date = result.getDate("modification_date");
                 
-                posts.add( new Post() );
+                posts.add( new Post(id, title, teacher, content, modification_date) );
             }
+            
+            stm.close();
+            result.close();
         } catch(SQLException ex) {
             System.err.println("Erro de conexão.");
         }
@@ -59,22 +62,22 @@ public class PostDao implements DaoInterface<Post>{
     }
 
     @Override
-    public void insert(Post type) throws DaoError {
+    public boolean insert(Post type) throws DaoError {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean delete(Post type) throws DaoError {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void delete(Post type) throws DaoError {
+    public boolean delete(int i) throws DaoError {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void delete(int i) throws DaoError {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void update(Post type) throws DaoError {
+    public boolean update(Post type) throws DaoError {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

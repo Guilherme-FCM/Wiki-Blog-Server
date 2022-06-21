@@ -12,13 +12,16 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -59,7 +62,19 @@ public class PostController extends HttpServlet {
             PostDao dao = new PostDao();
             ArrayList<Post> posts = dao.select();
             
-            // JSON
+            // Não consegui utilizar o JSON-B ou o JSON-P =)
+            JSONArray jsonArray = new JSONArray();
+            for (Post post : posts){
+                jsonArray.put(
+                    new JSONObject()
+                        .put("id", post.getId())
+                        .put("title", post.getTitle())
+                        .put("author", post.getAuthor())
+                        .put("content", post.getContent())
+                        .put("modificationDate", post.getModificationDate())
+                );
+            }
+            out.print(jsonArray);
         } catch (DaoError ex) {
             out.print(ex);
         }

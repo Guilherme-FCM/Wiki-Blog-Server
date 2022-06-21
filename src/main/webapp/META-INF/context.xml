@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/Wiki-Blog">
-    <Resource
-        maxActive="100"
-        maxIdle="10"
-        maxWait="15000"
-        name="wiki-blog"
-        auth="Container"
-        type="javax.sql.DataSource"
-        driverClassName="org.postgresql.Driver"
-        username="postgres"
-        password="root"
-        url="jdbc:postgresql://localhost:5432/Wiki-Blog" 
-    />
+  <Resource auth="Container" driverClassName="org.postgresql.Driver" maxActive="100" maxIdle="10" maxWait="15000" name="wiki-blog" password="root" type="javax.sql.DataSource" url="jdbc:postgresql://localhost:5432/Wiki-Blog" username="postgres"/>
 </Context>
