@@ -6,11 +6,14 @@ package DAO;
 
 import Model.Post;
 import java.sql.Connection;
-import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,59 +29,121 @@ public class PostDao implements DaoInterface<Post>{
     @Override
     public ArrayList<Post> select()  {
         ArrayList<Post> posts = new ArrayList();
-        String query = "select * from posts;";
-        
         try {
-            Statement stm = connection.createStatement();
-            ResultSet result = stm.executeQuery(query);
+            PreparedStatement stm = connection.prepareStatement("select * from posts;");
+            ResultSet result = stm.executeQuery();
             
             while(result.next()){
                 int id = result.getInt("id");
                 String title = result.getString("title");
                 String teacher = result.getString("author");
                 String content = result.getString("content");
-                Date modification_date = result.getDate("modification_date");
+                Timestamp modification_date = result.getTimestamp("modification_date");
                 
                 posts.add( new Post(id, title, teacher, content, modification_date) );
             }
-            
             stm.close();
             result.close();
         } catch(SQLException ex) {
-            System.err.println("Erro de conexão.");
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return posts;
     }
 
     @Override
-    public Post select(int i) throws DaoError {
+    public Post select(int id) throws DaoError {
+        try {
+            PreparedStatement stm = connection.prepareStatement("select * from posts where id = ?;");
+            stm.setInt(1, id);
+            ResultSet result = stm.executeQuery();
+            result.next();
+            
+            String title = result.getString("title");
+            String teacher = result.getString("author");
+            String content = result.getString("content");
+            Timestamp modification_date = result.getTimestamp("modification_date");
+
+            return new Post(id, title, teacher, content, modification_date);
+        } catch(SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<Post> select(String filter) throws DaoError {
+        ArrayList<Post> posts = new ArrayList();
+        try {
+            PreparedStatement stm = connection.prepareStatement("select * from posts where title ilike '%"+ filter +"%';");
+            ResultSet result = stm.executeQuery();
+            
+            while(result.next()){
+                int id = result.getInt("id");
+                String title = result.getString("title");
+                String teacher = result.getString("author");
+                String content = result.getString("content");
+                Timestamp modification_date = result.getTimestamp("modification_date");
+                
+                posts.add( new Post(id, title, teacher, content, modification_date) );
+            }
+            stm.close();
+            result.close();
+        } catch(SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return posts;
+    }
+
+    @Override
+    public int insert(Post post) throws DaoError {
+        try {
+            PreparedStatement stm = connection.prepareStatement(
+                "insert into posts (title, author, content) values (?, ?, ?);"
+            );
+            stm.setString(1, post.getTitle());
+            stm.setString(2, post.getAuthor());
+            stm.setString(3, post.getContent());
+            return stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    @Override
+    public int delete(Post type) throws DaoError {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public ArrayList<Post> select(String string) throws DaoError {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public int delete(int id) throws DaoError {
+        try {
+            PreparedStatement stm = connection.prepareStatement(
+                "delete from posts where id = ?;"
+            );
+            stm.setInt(1, id);
+            return stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     @Override
-    public boolean insert(Post type) throws DaoError {
-            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean delete(Post type) throws DaoError {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean delete(int i) throws DaoError {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean update(Post type) throws DaoError {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public int update(Post post) throws DaoError {
+        try {
+            PreparedStatement stm = connection.prepareStatement(
+                "update posts set title = ?, author = ?, content = ?, modification_date = current_timestamp where id = ?;"
+            );
+            stm.setString(1, post.getTitle());
+            stm.setString(2, post.getAuthor());
+            stm.setString(3, post.getContent());
+            stm.setInt(4, post.getId());
+            return stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     @Override

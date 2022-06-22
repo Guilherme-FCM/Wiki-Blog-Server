@@ -14,9 +14,9 @@ public interface DaoInterface<Type> {
     public ArrayList<Type> select() throws DaoError;
     public Type select(int id) throws DaoError;
     public ArrayList<Type> select(String title) throws DaoError;
-    public boolean insert(Type object) throws DaoError;
-    public boolean delete(Type object) throws DaoError;
-    public boolean delete(int id) throws DaoError;
-    public boolean update(Type object) throws DaoError;
+    public int insert(Type object) throws DaoError;
+    public int delete(Type object) throws DaoError;
+    public int delete(int id) throws DaoError;
+    public int update(Type object) throws DaoError;
     public void exit() throws DaoError;
 }

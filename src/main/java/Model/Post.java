@@ -4,8 +4,7 @@
  */
 package Model;
 
-import java.sql.Date;
-
+import java.sql.Timestamp;
 /**
  *
  * @author GuilhermeFCM
@@ -13,9 +12,9 @@ import java.sql.Date;
 public class Post {
     private int id;
     private String title, author, content;
-    private Date modificationDate;
+    private Timestamp modificationDate;
 
-    public Post(int id, String title, String author, String content, Date modificationDate) {
+    public Post(int id, String title, String author, String content, Timestamp modificationDate) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -23,11 +22,17 @@ public class Post {
         this.modificationDate = modificationDate;
     }
 
-    public Post(String title, String author, String content, Date modificationDate) {
+    public Post(int id, String title, String author, String content) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.content = content;
-        this.modificationDate = modificationDate;
+    }
+    
+    public Post(String title, String author, String content) {
+        this.title = title;
+        this.author = author;
+        this.content = content;
     }
 
     public int getId() {
@@ -62,13 +67,11 @@ public class Post {
         this.content = content;
     }
 
-    public Date getModificationDate() {
+    public Timestamp getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Date modificationDate) {
+    public void setModificationDate(Timestamp modificationDate) {
         this.modificationDate = modificationDate;
     }
-    
-    
 }

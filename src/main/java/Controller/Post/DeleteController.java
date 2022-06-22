@@ -2,33 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller;
+package Controller.Post;
 
 import DAO.DaoError;
 import DAO.PostDao;
 import Model.Post;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
  * @author GuilhermeFCM
  */
-@WebServlet(name = "PostController", urlPatterns = {"/posts"})
-public class PostController extends HttpServlet {
+@WebServlet(name = "DeleteController", urlPatterns = {"/posts/delete"})
+public class DeleteController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,7 +33,16 @@ public class PostController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/json");
+        response.setContentType("text/json;charset=UTF-8");
+        int id = Integer.parseInt(request.getParameter("id"));
+        
+        PrintWriter out = response.getWriter();
+        try {
+            PostDao dao = new PostDao();
+            int res = dao.delete(id);
+            out.printf("{\"success\": %b}", (res == 1));
+        } catch (DaoError ex) {  out.print(ex); }
+        out.close();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -57,28 +58,7 @@ public class PostController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        PrintWriter out = response.getWriter();
-        try {
-            PostDao dao = new PostDao();
-            ArrayList<Post> posts = dao.select();
-            
-            // Não consegui utilizar o JSON-B ou o JSON-P =)
-            JSONArray jsonArray = new JSONArray();
-            for (Post post : posts){
-                jsonArray.put(
-                    new JSONObject()
-                        .put("id", post.getId())
-                        .put("title", post.getTitle())
-                        .put("author", post.getAuthor())
-                        .put("content", post.getContent())
-                        .put("modificationDate", post.getModificationDate())
-                );
-            }
-            out.print(jsonArray);
-        } catch (DaoError ex) {
-            out.print(ex);
-        }
-    }   
+    }
 
     /**
      * Handles the HTTP <code>POST</code> method.
