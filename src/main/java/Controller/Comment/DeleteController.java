@@ -2,13 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller.Post;
+package Controller.Comment;
 
+import DAO.CommentDao;
 import DAO.DaoError;
-import DAO.PostDao;
-import Model.Post;
+import Model.Comment;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author GuilhermeFCM
  */
-@WebServlet(name = "InsertPostController", urlPatterns = {"/posts/insert"})
-public class InsertController extends HttpServlet {
+@WebServlet(name = "DeleteCommentController", urlPatterns = {"/comments/delete"})
+public class DeleteController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,18 +35,16 @@ public class InsertController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/json;charset=UTF-8");
-        String title = request.getParameter("title");
-        String author = request.getParameter("author");
-        String content = request.getParameter("content");
-        
+        response.setContentType("text/html;charset=UTF-8");
+        int id = Integer.parseInt(request.getParameter("id"));
         PrintWriter out = response.getWriter();
         try {
-            PostDao dao = new PostDao();
-            int res = dao.insert( new Post(title, author, content) );
+            CommentDao dao = new CommentDao();
+            int res = dao.delete(id);
             out.printf("{\"success\": %b}", (res == 1));
-        } catch (DaoError ex) {  out.print(ex); }
-        out.close();
+        } catch (DaoError ex) {
+            Logger.getLogger(InsertController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
