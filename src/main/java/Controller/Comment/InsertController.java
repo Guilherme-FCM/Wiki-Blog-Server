@@ -35,13 +35,17 @@ public class InsertController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        int id_post = Integer.parseInt(request.getParameter("id_post"));
-        String content = request.getParameter("content");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        
         PrintWriter out = response.getWriter();
+        String id_post = request.getParameter("id_post");
+        String content = request.getParameter("content");
         try {
             CommentDao dao = new CommentDao();
-            int res = dao.insert( new Comment(id_post, content) );
+            int res = dao.insert( new Comment(Integer.parseInt(id_post), content) );
             out.printf("{\"success\": %b}", (res == 1));
         } catch (DaoError ex) {
             Logger.getLogger(InsertController.class.getName()).log(Level.SEVERE, null, ex);

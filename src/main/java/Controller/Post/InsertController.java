@@ -33,12 +33,16 @@ public class InsertController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/json;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        
+        PrintWriter out = response.getWriter();
         String title = request.getParameter("title");
         String author = request.getParameter("author");
         String content = request.getParameter("content");
         
-        PrintWriter out = response.getWriter();
         try {
             PostDao dao = new PostDao();
             int res = dao.insert( new Post(title, author, content) );

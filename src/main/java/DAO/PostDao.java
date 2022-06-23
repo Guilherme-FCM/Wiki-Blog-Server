@@ -29,7 +29,7 @@ public class PostDao implements DaoInterface<Post>{
     public ArrayList<Post> select()  {
         ArrayList<Post> posts = new ArrayList();
         try {
-            PreparedStatement stm = connection.prepareStatement("select * from posts;");
+            PreparedStatement stm = connection.prepareStatement("select * from posts order by modification_date desc;");
             ResultSet result = stm.executeQuery();
             
             while(result.next()){
@@ -61,12 +61,14 @@ public class PostDao implements DaoInterface<Post>{
             String teacher = result.getString("author");
             String content = result.getString("content");
             Timestamp modification_date = result.getTimestamp("modification_date");
-
+            
+            stm.close();
+            result.close();
             return new Post(id, title, teacher, content, modification_date);
         } catch(SQLException ex) {
             Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -102,11 +104,14 @@ public class PostDao implements DaoInterface<Post>{
             stm.setString(1, post.getTitle());
             stm.setString(2, post.getAuthor());
             stm.setString(3, post.getContent());
-            return stm.executeUpdate();
+            
+            int result = stm.executeUpdate();
+            stm.close();
+            return result;
         } catch (SQLException ex) {
             Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
-        return 0;
     }
 
     @Override
@@ -121,11 +126,14 @@ public class PostDao implements DaoInterface<Post>{
                 "delete from posts where id = ?;"
             );
             stm.setInt(1, id);
-            return stm.executeUpdate();
+            
+            int result = stm.executeUpdate();
+            stm.close();
+            return result;
         } catch (SQLException ex) {
             Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
-        return 0;
     }
 
     @Override
@@ -138,11 +146,14 @@ public class PostDao implements DaoInterface<Post>{
             stm.setString(2, post.getAuthor());
             stm.setString(3, post.getContent());
             stm.setInt(4, post.getId());
-            return stm.executeUpdate();
+            
+            int result = stm.executeUpdate();
+            stm.close();
+            return result;
         } catch (SQLException ex) {
             Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
         }
-        return 0;
     }
 
     @Override
